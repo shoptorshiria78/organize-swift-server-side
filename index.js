@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config()
 const app = express();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // middleware
 app.use(express.json());
@@ -67,9 +67,21 @@ async function run() {
             res.send(result);
         })
 
-        app.post('/addTask', async(req, res)=>{
+        app.post('/addTask', async (req, res) => {
             const task = req.body;
             const result = await taskCollections.insertOne(task);
+            res.send(result);
+        })
+
+        app.get('/getToDo', async (req, res) => {
+            const result = await taskCollections.find().toArray();
+            res.send(result);
+        })
+
+        app.delete('/deleteTask/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await taskCollections.deleteOne(query);
             res.send(result);
         })
 
