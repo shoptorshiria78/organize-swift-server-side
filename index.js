@@ -73,8 +73,40 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/getToDo', async (req, res) => {
-            const result = await taskCollections.find().toArray();
+        app.get('/getToDo/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { 
+                email: email
+              }
+            const result = await taskCollections.find(query).toArray();
+            res.send(result);
+        })
+
+        app.patch('/sendToOnGoing/:id', async (req, res)=>{
+            const updateTask = req.body;
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+              $set: {
+                status: updateTask.status,
+                }
+            }
+    
+            const result = await taskCollections.updateOne(filter, updateDoc)
+            res.send(result);
+        })
+
+        app.patch('/sendToGoCompleted/:id', async (req, res)=>{
+            const updateTask = req.body;
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+              $set: {
+                status: updateTask.status,
+                }
+            }
+    
+            const result = await taskCollections.updateOne(filter, updateDoc)
             res.send(result);
         })
 
